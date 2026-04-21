@@ -4,6 +4,8 @@
  */
 
 async function applyAllFeatures() {
+  const state = await StorageManager.get();
+  await VideoTypeEnforcer.enforce(state);
   await FilterEngine.refreshState();
 }
 
@@ -27,6 +29,7 @@ async function init() {
   );
 
   // Initial trigger
+  await VideoTypeEnforcer.enforce(state);
   FilterEngine.apply();
 }
 

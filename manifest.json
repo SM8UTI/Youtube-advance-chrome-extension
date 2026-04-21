@@ -27,6 +27,7 @@
         "modules/videoScanner.js",
         "modules/durationParser.js",
         "modules/filterEngine.js",
+        "modules/videoTypeEnforcer.js",
         "modules/observerManager.js",
         "modules/toastManager.js",
         "modules/uiPanel.js",
