@@ -39,6 +39,48 @@ const FilterEngine = {
     if (videos.length > 0) {
       this.log(`Processing ${videos.length} new videos...`);
       videos.forEach(video => this.processVideo(video));
+      
+      // Check results after a short delay to allow for filter application and metadata loading
+      this.debounceCheckResults();
+    }
+  },
+
+  /**
+   * Debounces the results check to avoid flickering/premature notifications.
+   */
+  debounceCheckResults() {
+    if (this.checkTimeout) clearTimeout(this.checkTimeout);
+    this.checkTimeout = setTimeout(() => this.checkResults(), 1000);
+  },
+
+  /**
+   * Checks if any videos are visible. If everything is hidden and content exists, notifies user.
+   */
+  checkResults() {
+    if (this.toastShown) return;
+
+    const selector = VideoScanner.selectors.join(', ');
+    const allVideos = Array.from(document.querySelectorAll(selector));
+    
+    // Ignore if page is empty or only has skeleton loaders
+    if (allVideos.length === 0) return;
+
+    // Filter out ads and skeletons for accurate counting
+    const realVideos = allVideos.filter(v => {
+      const isSkeleton = v.classList.contains('skeleton-bg-color') || v.querySelector('.ytd-video-masthead-ad-v3-renderer');
+      const isAd = v.querySelector('.ytd-ad-slot-renderer') || v.closest('ytd-ad-slot-renderer');
+      return !isSkeleton && !isAd;
+    });
+
+    if (realVideos.length === 0) return;
+
+    const visibleVideos = realVideos.filter(v => v.style.display !== 'none');
+
+    this.log(`Results check: ${visibleVideos.length} visible out of ${realVideos.length} total.`);
+
+    if (visibleVideos.length === 0 && realVideos.length > 0) {
+      ToastManager.show('No videos found for this filter. Try lowering it!');
+      this.toastShown = true;
     }
   },
 

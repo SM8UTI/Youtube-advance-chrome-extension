@@ -28,6 +28,7 @@
         "modules/durationParser.js",
         "modules/filterEngine.js",
         "modules/observerManager.js",
+        "modules/toastManager.js",
         "modules/uiPanel.js",
         "content.js"
       ],
