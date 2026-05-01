@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Duration Filter",
-  "version": "1.0",
-  "description": "Filter YouTube videos by duration.",
+  "name": "YouTube Duration Filter & Downloader",
+  "version": "1.1",
+  "description": "Premium duration filter and downloading system for YouTube.",
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
@@ -17,7 +17,17 @@
       "128": "icon128.png"
     }
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
@@ -31,9 +41,13 @@
         "modules/observerManager.js",
         "modules/toastManager.js",
         "modules/uiPanel.js",
-        "content.js"
+        "content.js",
+        "downloadContent.js"
       ],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
